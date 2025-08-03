@@ -32,8 +32,8 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
             <Form action={addTask}>
                 <label>new task: </label>
                 <input className="white" name="task"></input>
-                {tasksElements}
             </Form>
+                {tasksElements}
         </section>
     )
 }

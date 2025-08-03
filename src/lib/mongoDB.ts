@@ -22,4 +22,7 @@ if (process.env.NODE_ENV === 'development') {
   clientPromise = client.connect()
 }
 
+const db = (await clientPromise).db("visionSchedule")
+const story = db.collection("story")
+
 export default clientPromise

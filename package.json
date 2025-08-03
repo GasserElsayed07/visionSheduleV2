@@ -9,6 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@schedule-x/calendar": "^2.36.0",
+    "@schedule-x/events-service": "^2.36.0",
+    "@schedule-x/react": "^2.36.0",
+    "@schedule-x/theme-default": "^2.36.0",
     "mongodb": "^6.18.0",
     "next": "15.4.4",
     "react": "19.1.0",
