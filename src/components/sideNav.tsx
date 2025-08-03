@@ -7,6 +7,7 @@ export default function SideNav() {
             <Link href="/vision/" >vision</Link>
             <Link href="/story/" >story</Link>
             <Link href="/tasks/" >tasks</Link>
+            <Link href="/schedule/">schedule</Link>
         </div>
     )
 }
