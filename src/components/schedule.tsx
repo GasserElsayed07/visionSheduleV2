@@ -19,7 +19,7 @@ export default function ScheduleClient({ tasks }: { tasks: Task[] }) {
       id: t._id?.toString() || idx + 1,
       title: t.task || "Untitled",
       start: t.start, // already in Schedule-X format
-      end: t.end
+      end: t.end,
     }))
 
 

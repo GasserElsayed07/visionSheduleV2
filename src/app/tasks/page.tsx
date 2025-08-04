@@ -11,41 +11,55 @@ import {
 } from "@/components/ui/card"
 import {Calendar24 } from "@/components/datePicker"
 import { format } from "date-fns"
+import DurationInput from "@/components/durationInput"
 
 
-function calculateEndDate(start: FormDataEntryValue | null, time, duration: number): string | null {
+function calculateEndDate(start: FormDataEntryValue | null, time : string | undefined, duration: number): string | null {
     if (!start) return null;
     const startDate = new Date(start as string);
     if (isNaN(startDate.getTime())) return null;
-    const startHour = Number(time);
+    const startHour = Number(time?.split(":")[0]);
+    const minutes = Number(time?.split(":")[1])
     const totalHour = startHour + Number(duration);
     console.log(totalHour)
     startDate.setHours(totalHour)
+    startDate.setMinutes(minutes)
     return format(new Date(startDate), "yyyy-MM-dd HH:mm");
 }
+
+
+
 export default async function TasksPage() {
     async function addTask(formD: FormData){
         'use server'
-        const startDate = formD.get("taskDate") + " " + formD.get("taskTime")?.toString().slice(0,5)
-        const endDate = calculateEndDate(formD.get("taskDate"), formD.get("taskTime")?.toString().slice(0,2), 2)
-        fetch("http://localhost:3000/api/tasks", {
+        const taskDate = formD.get("taskDate");
+        const taskTime = formD.get("taskTime");
+
+        if (!taskDate || !taskTime) {
+            // In server actions, you can't use alert. Consider throwing an error or handling it differently.
+            console.error("Enter a valid date and time");
+            return;
+        } else {
+            const startDate = `${taskDate} ${taskTime.toString().slice(0, 5)}`;
+            const duration = formD.get("taskDuration") ? Number(formD.get("taskDuration")?.toString()) : 2
+            const endDate = calculateEndDate(taskDate, taskTime.toString().slice(0, 6), duration);
+            await fetch("http://localhost:3000/api/tasks", {
             method: "POST",
             headers: {
-            "Content-Type": "application/json"
+                "Content-Type": "application/json"
             },
             body: JSON.stringify({
-            type: "task", 
-            task: formD.get("task"),
-            duration: 2,
-            start: startDate,
-            end: endDate
+                type: "task",
+                task: formD.get("task"),
+                duration: formD.get("taskDuration") ? Number(formD.get("taskDuration")?.toString()) : 2,
+                start: startDate,
+                end: endDate
             })
-        })
-        console.log(startDate)
-        console.log(endDate)
-        // console.log(formD.get("taskTime")?.toString().slice(0,5)) 
-        // const newDate =  formD.get("taskDate")?.toString().split("T")[0] + " " + formD.get("taskTime")?.toString().slice(0,5)
-        // console.log(newDate)
+            });
+            console.log(formD.get("taskDate"));
+            console.log(endDate);
+        }
+        console.log(formD.get("taskDuration"))
     }
 
     
@@ -67,7 +81,11 @@ export default async function TasksPage() {
                     className="white pl-1 border-2 border-white rounded-[8px] p-1 focus:outline-none focus:ring-0 focus:border-white"
                     name="task"
                 />
-                <Calendar24/>
+                <div className="flex flex-col items-center ">    
+                    <Calendar24/>
+                    <DurationInput />
+                </div>
+                <button type="submit" className="mt-2 px-4 py-2 bg-blue-500 text-white rounded">Add Task</button>
             </Form>
             {/* <div className="flex flex-wrap justify-center gap-1">
                 {tasksCards}    

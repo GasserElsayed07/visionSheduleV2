@@ -23,8 +23,6 @@ export default async function SchedulePage() {
   const db = (await clientPromise).db("visionSchedule")
   const users = db.collection("users")
   const me = await users.findOne({ name: "gaso" })
-  const endDate = calculateEndDate(me?.tasks[11].start, me?.tasks[11].duration)
-  console.log(me?.tasks[11].start, endDate, me?.tasks[11].task)
 
   const tasks = (me?.tasks || []).map((task:Task) => ({
   ...task,
@@ -34,7 +32,7 @@ export default async function SchedulePage() {
     : undefined,
   end: task.end
     ? format(new Date(task.end), "yyyy-MM-dd HH:mm")
-    : undefined
+    : undefined,
 }))
 
   return <ScheduleClient tasks={tasks} />
