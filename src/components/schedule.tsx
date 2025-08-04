@@ -3,16 +3,16 @@
 import { ScheduleXCalendar, useNextCalendarApp } from "@schedule-x/react"
 import { createViewWeek } from "@schedule-x/calendar"
 import "@schedule-x/theme-default/dist/index.css"
-
+import { createScrollControllerPlugin } from '@schedule-x/scroll-controller'
 type Task = {
-    _id: string
-    start: string
-    end: string
-    title: string | null
-    task: string | null
+  _id: string
+  start: string
+  end: string
+  title: string | null
+  task: string | null
 }
 
-export default function ScheduleClient({ tasks }:{tasks: Task[]}) {
+export default function ScheduleClient({ tasks }: { tasks: Task[] }) {
   const events = tasks
     .filter(t => t.start && t.end)
     .map((t, idx) => ({
@@ -22,9 +22,15 @@ export default function ScheduleClient({ tasks }:{tasks: Task[]}) {
       end: t.end
     }))
 
+
+  const scrollController = createScrollControllerPlugin({
+    initialScroll: '21:00'
+  })
   const calendar = useNextCalendarApp({
     views: [createViewWeek()],
-    events
+    events,
+    firstDayOfWeek: 6,
+    plugins: [scrollController]
   })
 
   return (

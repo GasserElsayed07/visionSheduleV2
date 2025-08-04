@@ -3,8 +3,8 @@ import { getManga } from "@/lib/test";
 
 export default async function Home() {
   const mangos = await getManga()
-  const mangosElements = mangos.map(manga => 
-    <p>{manga.zeft}{manga.name}</p>
+  const mangosElements = mangos.map((manga, i) => 
+    <p key={i} >{manga.zeft}{manga.name}</p>
   )
   return (
     <section>
