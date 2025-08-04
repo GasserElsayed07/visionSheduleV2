@@ -22,7 +22,7 @@ export function Calendar24() {
       <input
         type="hidden"
         name="taskDate"
-        value={date? date.toISOString() : ""}
+        value={date ? date.toLocaleDateString("en-CA") : ""}
       />
       <div className="flex flex-col gap-3">
         <Label htmlFor="date-picker" className="px-1">

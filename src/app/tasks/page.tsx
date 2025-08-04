@@ -10,35 +10,42 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import {Calendar24 } from "@/components/datePicker"
+import { format } from "date-fns"
 
 
-function calculateEndDate(start: FormDataEntryValue | null, duration: number): string | null {
+function calculateEndDate(start: FormDataEntryValue | null, time, duration: number): string | null {
     if (!start) return null;
     const startDate = new Date(start as string);
     if (isNaN(startDate.getTime())) return null;
-    startDate.setHours(startDate.getHours() + duration);
-    return startDate.toISOString();
+    const startHour = Number(time);
+    const totalHour = startHour + Number(duration);
+    console.log(totalHour)
+    startDate.setHours(totalHour)
+    return format(new Date(startDate), "yyyy-MM-dd HH:mm");
 }
 export default async function TasksPage() {
-
     async function addTask(formD: FormData){
-         'use server'
-        // fetch("http://localhost:3000/api/tasks", {
-        //     method: "POST",
-        //     headers: {
-        //     "Content-Type": "application/json"
-        //     },
-        //     body: JSON.stringify({
-        //     type: "task", 
-        //     task: formD.get("task"),
-        //     duration: 2,
-        //     start: formD.get("taskDate"),
-        //     end: calculateEndDate(formD.get("taskDate"), 2)
-        //     })
-        // })
-        console.log(formD.get("taskDate"))
-        console.log(calculateEndDate(formD.get("taskDate"), 2))
-        console.log(formD.get("taskTime")?.toString().slice(0,5))   
+        'use server'
+        const startDate = formD.get("taskDate") + " " + formD.get("taskTime")?.toString().slice(0,5)
+        const endDate = calculateEndDate(formD.get("taskDate"), formD.get("taskTime")?.toString().slice(0,2), 2)
+        fetch("http://localhost:3000/api/tasks", {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+            type: "task", 
+            task: formD.get("task"),
+            duration: 2,
+            start: startDate,
+            end: endDate
+            })
+        })
+        console.log(startDate)
+        console.log(endDate)
+        // console.log(formD.get("taskTime")?.toString().slice(0,5)) 
+        // const newDate =  formD.get("taskDate")?.toString().split("T")[0] + " " + formD.get("taskTime")?.toString().slice(0,5)
+        // console.log(newDate)
     }
 
     
@@ -62,9 +69,9 @@ export default async function TasksPage() {
                 />
                 <Calendar24/>
             </Form>
-            <div className="flex flex-wrap justify-center gap-1">
+            {/* <div className="flex flex-wrap justify-center gap-1">
                 {tasksCards}    
-            </div>
+            </div> */}
         </section>
     )
 }
