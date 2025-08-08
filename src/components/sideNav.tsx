@@ -8,6 +8,7 @@ export default function SideNav() {
             <Link href="/story/" >story</Link>
             <Link href="/tasks/" >tasks</Link>
             <Link href="/schedule/">schedule</Link>
+            <Link href="/schedule2/">schedule2</Link>
         </div>
     )
 }
