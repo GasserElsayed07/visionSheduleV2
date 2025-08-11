@@ -12,6 +12,8 @@ import {
 import {Calendar24 } from "@/components/datePicker"
 import { format } from "date-fns"
 import DurationInput from "@/components/durationInput"
+import ReoccurringField from "@/components/reoccurringField"
+
 
 
 function calculateEndDate(start: FormDataEntryValue | null, time : string | undefined, duration: number): string | null {
@@ -38,6 +40,7 @@ export default async function TasksPage() {
         if (!taskDate || !taskTime) {
             // In server actions, you can't use alert. Consider throwing an error or handling it differently.
             console.error("Enter a valid date and time");
+            console.log(formD.get("secondDay"), typeof(formD.get("secondDay")))
             return;
         } else {
             const startDate = `${taskDate} ${taskTime.toString().slice(0, 5)}`;
@@ -73,6 +76,7 @@ export default async function TasksPage() {
         </Card>
     )
 
+
     return (
         <section className="flex flex-col justify-center items-center w-full">
             <Form action={addTask}>
@@ -84,12 +88,10 @@ export default async function TasksPage() {
                 <div className="flex flex-col items-center ">    
                     <Calendar24/>
                     <DurationInput />
+                    <ReoccurringField/>
                 </div>
                 <button type="submit" className="mt-2 px-4 py-2 bg-blue-500 text-white rounded">Add Task</button>
             </Form>
-            {/* <div className="flex flex-wrap justify-center gap-1">
-                {tasksCards}    
-            </div> */}
         </section>
     )
 }
