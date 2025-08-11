@@ -40,27 +40,58 @@ export default async function TasksPage() {
         if (!taskDate || !taskTime) {
             // In server actions, you can't use alert. Consider throwing an error or handling it differently.
             console.error("Enter a valid date and time");
-            console.log(formD.get("secondDay"), typeof(formD.get("secondDay")))
+            console.log(formD.get("reoccurringDays"), typeof(formD.get("reoccurringDays")))
+            console.log(formD.get("reoccurring"), typeof(formD.get("reoccurring")))
             return;
         } else {
-            const startDate = `${taskDate} ${taskTime.toString().slice(0, 5)}`;
+            const startDate = `${taskDate} ${taskTime?.toString().slice(0, 5)}`;
             const duration = formD.get("taskDuration") ? Number(formD.get("taskDuration")?.toString()) : 2
-            const endDate = calculateEndDate(taskDate, taskTime.toString().slice(0, 6), duration);
-            await fetch("http://localhost:3000/api/tasks", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                type: "task",
-                task: formD.get("task"),
-                duration: formD.get("taskDuration") ? Number(formD.get("taskDuration")?.toString()) : 2,
-                start: startDate,
-                end: endDate
-            })
-            });
-            console.log(formD.get("taskDate"));
-            console.log(endDate);
+            const endDate = calculateEndDate(taskDate, taskTime?.toString().slice(0, 6), duration);
+
+            async function addOneTimeTask(){
+                await fetch("http://localhost:3000/api/tasks", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    type: "task",
+                    task: formD.get("task"),
+                    duration: formD.get("taskDuration") ? Number(formD.get("taskDuration")?.toString()) : 2,
+                    start: startDate,
+                    end: endDate
+                })
+                });
+                console.log(formD.get("taskDate"));
+                console.log(endDate);
+            }
+
+            async function reoccurringTask(){
+                await fetch("http://localhost:3000/api/reoccurringTasks", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    type: "reoccuring task",
+                    task: formD.get("task"),
+                    duration: formD.get("taskDuration") ? Number(formD.get("taskDuration")?.toString()) : 2,
+                    start: startDate,
+                    end: endDate,
+                    days: formD.get("reoccurringDays")
+                })
+                });
+                console.log(formD.get("taskDate"));
+                console.log(endDate);
+            }
+
+            if(formD.get("reoccurring") === "false"){
+                addOneTimeTask()
+            }
+            else if(formD.get("reoccurring") === "true"){
+                reoccurringTask()
+            }
+
         }
         console.log(formD.get("taskDuration"))
     }
