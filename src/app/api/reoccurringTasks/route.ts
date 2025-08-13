@@ -13,3 +13,18 @@ export async function POST(req: Request){
         }
     })
 }
+
+export async function GET() {
+  const db = (await clientPromise).db("visionSchedule")
+  const users = await db.collection("users")
+  const me = await users.findOne({ name: "gaso" })
+
+  if (!me) {
+    return NextResponse.json(
+      { error: "User not found" },
+      { status: 404 }
+    )
+  }
+
+  return NextResponse.json(me.reoccurringTasks || [])
+}
